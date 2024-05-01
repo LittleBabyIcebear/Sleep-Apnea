@@ -10,7 +10,7 @@ import matplotlib
 matplotlib.use('Agg')  # Use non-interactive backend
 import matplotlib.pyplot as plt
 
-#set plt ke nonaktif 
+# set plt ke nonaktif
 plt.ioff()
 
 # Fungsi untuk menghitung fitur dari satu file
@@ -73,14 +73,14 @@ def process_directory(directory_path):
         return None
 
 # Direktori yang berisi file-file yang ingin diproses
-directory_path = 'C:\\Database\\Sleep Aja Ga Sih!\\Sleep-Apnea\\Apnea'
+directory_path = "Normal"
 
 # Proses direktori
 df_combined = process_directory(directory_path)
 
 # Simpan dataframe ke dalam file Excel
 if df_combined is not None:
-    excel_output_path = 'C:\\Database\\Sleep Aja Ga Sih!\\Sleep-Apnea\\fitur_apnea.xlsx'
+    excel_output_path = "fitur_normal.xlsx"
     df_combined.to_excel(excel_output_path, index=False)
     print("Dataframe berhasil disimpan ke dalam file Excel:", excel_output_path)
 else:
