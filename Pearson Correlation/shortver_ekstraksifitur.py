@@ -73,14 +73,14 @@ def process_directory(directory_path):
         return None
 
 # Direktori yang berisi file-file yang ingin diproses
-directory_path = "Normal"
+directory_path = "Normal_v2"
 
 # Proses direktori
 df_combined = process_directory(directory_path)
 
 # Simpan dataframe ke dalam file Excel
 if df_combined is not None:
-    excel_output_path = "fitur_normal.xlsx"
+    excel_output_path = "fitur_normal_v2.xlsx"
     df_combined.to_excel(excel_output_path, index=False)
     print("Dataframe berhasil disimpan ke dalam file Excel:", excel_output_path)
 else:
