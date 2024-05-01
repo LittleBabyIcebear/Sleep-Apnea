@@ -60,7 +60,7 @@ def process_directory(directory_path):
 
     # Iterasi setiap file dalam direktori
     for filename in os.listdir(directory_path):
-        if filename.endswith(".csv"):
+        if filename.endswith((".csv", ".txt")):
             file_path = os.path.join(directory_path, filename)
             df = compute_feature(file_path)
             df_list.append(df)
@@ -73,14 +73,14 @@ def process_directory(directory_path):
         return None
 
 # Direktori yang berisi file-file yang ingin diproses
-directory_path = "Normal_v2"
+directory_path = "Apnea_v2"
 
 # Proses direktori
 df_combined = process_directory(directory_path)
 
 # Simpan dataframe ke dalam file Excel
 if df_combined is not None:
-    excel_output_path = "fitur_normal_v2.xlsx"
+    excel_output_path = "fitur_apnea_v2.xlsx"
     df_combined.to_excel(excel_output_path, index=False)
     print("Dataframe berhasil disimpan ke dalam file Excel:", excel_output_path)
 else:
