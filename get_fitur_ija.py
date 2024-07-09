@@ -2,13 +2,14 @@ import os
 import numpy as np
 import pandas as pd
 import biosppy
-import pyhrv
+import pyhrv.tools as tools
 import pyhrv.time_domain as td
 import pyhrv.frequency_domain as fd
 import pyhrv.nonlinear as nl
 import matplotlib
 matplotlib.use('Agg')  # Use non-interactive backend
 import matplotlib.pyplot as plt
+import count_resp_rate
 
 # set plt ke nonaktif
 plt.ioff()
@@ -17,9 +18,10 @@ plt.ioff()
 def compute_feature(file_path):
     print("Mulai menghitung fitur untuk file:", file_path)
     signal = np.loadtxt(file_path)[:]
+    jumlahdata = len(signal)
 
-    #t peaks
-    t, filtered_signal, rpeaks = biosppy.signals.ecg.ecg(signal, sampling_rate=100)[:3]
+    # t peaks
+    t, filtered_signal, rpeaks = biosppy.signals.ecg.ecg(signal, sampling_rate=125)[:3]
 
     # Hitung fitur HRV
     results_hrv = td.hr_parameters(rpeaks=t[rpeaks])["hr_mean"]
@@ -36,20 +38,26 @@ def compute_feature(file_path):
     sd2_value = sd1_sd2['sd2']
     sd_ratio_value = sd1_sd2['sd_ratio']
 
+    resp_rate = count_resp_rate.countRespiratoryRate(jumlahdata=jumlahdata, y=signal)
+    print(resp_rate)
+
     # Buat dataframe
-    df_result = pd.DataFrame({
-        'HR': [results_hrv],
-        'SDNN': [sdnn_value],
-        'RMSSD': [rmssd_value],
-        'SDSD': [sdsd_value],
-        'pNN50': [pnn50_value],
-        'LF': [LF],
-        'HF': [HF],
-        'LF/HF': [LFHF_Ratio],
-        'SD1': [sd1_value],
-        'SD2': [sd2_value],
-        'SD_ratio': [sd_ratio_value]
-    })
+    df_result = pd.DataFrame(
+        {
+            "HR": [results_hrv],
+            "SDNN": [sdnn_value],
+            "RMSSD": [rmssd_value],
+            "SDSD": [sdsd_value],
+            "pNN50": [pnn50_value],
+            "LF": [LF],
+            "HF": [HF],
+            "LF/HF": [LFHF_Ratio],
+            "SD1": [sd1_value],
+            "SD2": [sd2_value],
+            "SD_ratio": [sd_ratio_value],
+            "Respiratory Rate": [resp_rate],
+        }
+    )
     print("Selesai menghitung fitur untuk file:", file_path)
 
     return df_result
@@ -73,14 +81,14 @@ def process_directory(directory_path):
         return None
 
 # Direktori yang berisi file-file yang ingin diproses
-directory_path = "new_data/Normal"
+directory_path = "new_data/Normal"  # ganti normal/apnea
 
 # Proses direktori
-df_combined = process_directory(directory_path)
+df_combined = process_directory("new_data/Normal")
 
 # Simpan dataframe ke dalam file Excel
 if df_combined is not None:
-    excel_output_path = "fitur_normal.xlsx"
+    excel_output_path = "fitur_with_resprate.xlsx"
     df_combined.to_excel(excel_output_path, index=False)
     print("Dataframe berhasil disimpan ke dalam file Excel:", excel_output_path)
 else:
